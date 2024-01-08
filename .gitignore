@@ -1,0 +1,21 @@
+# Binaries
+**/bin/
+bin-int/
+Intermediates/
+
+**x64/
+**x86/
+
+
+# Visual Studio files and folder
+.vs/
+**.sln
+**.vcxproj
+**.vcxproj.filters
+**.vcxproj.user
+**.csproj
+
+# Rider Files 
+.idea/
+build
+cmake-build-debug
