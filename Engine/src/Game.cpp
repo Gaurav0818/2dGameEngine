@@ -110,6 +110,11 @@ void Game::Setup()
 /// </summary>
 void Game::Update()
 {
+	while (!SDL_TICKS_PASSED(SDL_GetTicks(), millisecLastFrame + MILLISEC_PER_FRAME)) {
+		std::cout << "Waiting for next frame" << std::endl;
+	}
+	millisecLastFrame = SDL_GetTicks();
+
 	position = position + velocity;
 
 	if (position.x > winWidth)

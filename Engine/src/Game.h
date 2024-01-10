@@ -3,6 +3,9 @@
 
 #include <SDL.h>
 
+const int FPS = 5000;
+const int MILLISEC_PER_FRAME = 1000 / FPS;
+
 class Game
 {
 public:
@@ -26,6 +29,8 @@ private:
     bool isRunning;
     int winWidth;
     int winHeight;
+
+    int millisecLastFrame;
 };
 
 #endif
