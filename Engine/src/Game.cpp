@@ -1,6 +1,7 @@
 #include "Game.h"
 #include <iostream>
 
+#include<glm/glm.hpp>
 #include<SDL_image.h>
 
 Game::Game()
@@ -57,8 +58,7 @@ void Game::Initialize()
 /// </summary>
 void Game::Run()
 {
-	isRunning = true;
-
+	Setup();
 	while (isRunning)
 	{
 		ProcessInput();
@@ -90,19 +90,33 @@ void Game::ProcessInput()
 	}
 }
 
+glm::vec2 position;
+glm::vec2 velocity;
+
 /// <summary>
 /// Initialize Stuff
 /// </summary>
 void Game::Setup()
 {
+	isRunning = true;
+
+	position = glm::vec2(0.0f, 0.0f);
+	velocity = glm::vec2(1.0f, 0.1f);
 }
+
 
 /// <summary>
 /// Update Stuff
 /// </summary>
 void Game::Update()
 {
-	// Update stuff...
+	position = position + velocity;
+
+	if (position.x > winWidth)
+		position.x = 0;
+	
+	if (position.y > winHeight)
+		position.y = 0;
 }
 
 
@@ -115,7 +129,7 @@ void Game::Render()
 	SDL_SetRenderDrawColor(renderer, 0, 120, 150, 255);
 	SDL_RenderClear(renderer);
 
-	RenderTexture("./assets/images/tree.png", 0, 0, 100, 100);
+	RenderTexture("./assets/images/tree.png", position.x, position.y, 100, 100);
 
 	SDL_RenderPresent(renderer);
 }
