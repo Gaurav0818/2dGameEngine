@@ -17,7 +17,7 @@ public:
     void Render();
     void Destroy();
 
-    void DisplayImage(const char* imagePath, int x, int y, int width, int height);
+    void RenderTexture(const char* imagePath, int x, int y, int width, int height);
 
 private:
     SDL_Window* window;

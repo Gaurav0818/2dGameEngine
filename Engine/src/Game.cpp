@@ -130,13 +130,17 @@ void Game::Destroy()
 
 void Game::RenderTexture(const char* imagePath, int x, int y, int width, int height)
 {
+	// Load a Collection of Pixels into a Surface
 	SDL_Surface* surface = IMG_Load(imagePath);
+	// Create a Texture from Collection of Pixels
 	SDL_Texture* texture = SDL_CreateTextureFromSurface(renderer, surface);
+	// Free the buffer of Pixels 
 	SDL_FreeSurface(surface);
 
+	// Define a Rectangle to Render the Texture
 	SDL_Rect destRect = { x, y, width, height };
+	// Render the Texture to the Screen using the Renderer and The Rectangle 
 	SDL_RenderCopy(renderer, texture, NULL, &destRect);
+	// Free the Texture 
 	SDL_DestroyTexture(texture);
-
-	SDL_RenderPresent(renderer);
 }
