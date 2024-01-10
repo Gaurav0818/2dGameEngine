@@ -3,7 +3,7 @@
 
 #include <SDL.h>
 
-const int FPS = 5000;
+const int FPS = 165;
 const int MILLISEC_PER_FRAME = 1000 / FPS;
 
 class Game
@@ -31,6 +31,7 @@ private:
     int winHeight;
 
     int millisecLastFrame;
+    double DeltaTime;
 };
 
 #endif

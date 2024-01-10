@@ -101,7 +101,7 @@ void Game::Setup()
 	isRunning = true;
 
 	position = glm::vec2(0.0f, 0.0f);
-	velocity = glm::vec2(1.0f, 0.1f);
+	velocity = glm::vec2(100.0f, 10.0f);
 }
 
 
@@ -110,12 +110,24 @@ void Game::Setup()
 /// </summary>
 void Game::Update()
 {
-	while (!SDL_TICKS_PASSED(SDL_GetTicks(), millisecLastFrame + MILLISEC_PER_FRAME)) {
-		std::cout << "Waiting for next frame" << std::endl;
-	}
+	//while (!SDL_TICKS_PASSED(SDL_GetTicks(), millisecLastFrame + MILLISEC_PER_FRAME)) {
+	//	std::cout << "Waiting for next frame" << std::endl;
+	//}
+
+	int timeToWait = MILLISEC_PER_FRAME - (SDL_GetTicks() - millisecLastFrame);
+	if(timeToWait> 0 && timeToWait < MILLISEC_PER_FRAME )
+		SDL_Delay(timeToWait);
+	
+	DeltaTime = (SDL_GetTicks() - millisecLastFrame) / 1000.0f;
+	
 	millisecLastFrame = SDL_GetTicks();
 
-	position = position + velocity;
+
+
+	
+
+	position.x += velocity.x *DeltaTime;
+	position.y += velocity.y *DeltaTime;
 
 	if (position.x > winWidth)
 		position.x = 0;
