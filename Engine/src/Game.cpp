@@ -105,6 +105,8 @@ void Game::Update()
 	// Update stuff...
 }
 
+
+
 /// <summary>
 /// Render Stuff
 /// </summary>
@@ -113,16 +115,28 @@ void Game::Render()
 	SDL_SetRenderDrawColor(renderer, 0, 120, 150, 255);
 	SDL_RenderClear(renderer);
 
-	SDL_SetRenderDrawColor(renderer, 0, 0, 0, 0);
-	SDL_Rect rect = { winWidth / 2 - 50, winHeight / 2 - 50, 100, 100 };
-	SDL_RenderFillRect(renderer, &rect);
+	RenderTexture("./assets/images/tree.png", 0, 0, 100, 100);
 
 	SDL_RenderPresent(renderer);
 }
+
 
 void Game::Destroy()
 {
 	SDL_DestroyRenderer(renderer);
 	SDL_DestroyWindow(window);
 	SDL_Quit();
+}
+
+void Game::RenderTexture(const char* imagePath, int x, int y, int width, int height)
+{
+	SDL_Surface* surface = IMG_Load(imagePath);
+	SDL_Texture* texture = SDL_CreateTextureFromSurface(renderer, surface);
+	SDL_FreeSurface(surface);
+
+	SDL_Rect destRect = { x, y, width, height };
+	SDL_RenderCopy(renderer, texture, NULL, &destRect);
+	SDL_DestroyTexture(texture);
+
+	SDL_RenderPresent(renderer);
 }
