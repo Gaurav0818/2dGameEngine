@@ -1,6 +1,8 @@
 #include "Game.h"
 #include <iostream>
 
+#include<SDL_image.h>
+
 Game::Game()
 {
 	std::cout<<"Game Constructor" << std::endl;	
@@ -10,6 +12,10 @@ Game::~Game()
 {
 	std::cout<<"Game Destructor" << std::endl;
 }
+
+/// <summary>
+/// Initialize window and renderer
+/// </summary>
 
 void Game::Initialize()
 {
@@ -46,6 +52,9 @@ void Game::Initialize()
 	}
 }
 
+/// <summary>
+/// Game Loop
+/// </summary>
 void Game::Run()
 {
 	isRunning = true;
@@ -58,6 +67,9 @@ void Game::Run()
 	}
 }
 
+/// <summary>
+/// Takes Care of Input
+/// </summary>
 void Game::ProcessInput()
 {
 	SDL_Event event;
@@ -78,16 +90,32 @@ void Game::ProcessInput()
 	}
 }
 
-void Game::Update()
+/// <summary>
+/// Initialize Stuff
+/// </summary>
+void Game::Setup()
 {
 }
 
+/// <summary>
+/// Update Stuff
+/// </summary>
+void Game::Update()
+{
+	// Update stuff...
+}
+
+/// <summary>
+/// Render Stuff
+/// </summary>
 void Game::Render()
 {
 	SDL_SetRenderDrawColor(renderer, 0, 120, 150, 255);
 	SDL_RenderClear(renderer);
 
-	// TODO: Render stuff
+	SDL_SetRenderDrawColor(renderer, 0, 0, 0, 0);
+	SDL_Rect rect = { winWidth / 2 - 50, winHeight / 2 - 50, 100, 100 };
+	SDL_RenderFillRect(renderer, &rect);
 
 	SDL_RenderPresent(renderer);
 }
