@@ -110,21 +110,9 @@ void Game::Setup()
 /// </summary>
 void Game::Update()
 {
-	//while (!SDL_TICKS_PASSED(SDL_GetTicks(), millisecLastFrame + MILLISEC_PER_FRAME)) {
-	//	std::cout << "Waiting for next frame" << std::endl;
-	//}
-
-	int timeToWait = MILLISEC_PER_FRAME - (SDL_GetTicks() - millisecLastFrame);
-	if(timeToWait> 0 && timeToWait < MILLISEC_PER_FRAME )
-		SDL_Delay(timeToWait);
-	
 	DeltaTime = (SDL_GetTicks() - millisecLastFrame) / 1000.0f;
 	
 	millisecLastFrame = SDL_GetTicks();
-
-
-
-	
 
 	position.x += velocity.x *DeltaTime;
 	position.y += velocity.y *DeltaTime;
