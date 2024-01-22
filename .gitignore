@@ -3,9 +3,6 @@
 bin-int/
 Intermediates/
 
-**x64/
-**x86/
-
 
 # Visual Studio files and folder
 .vs/
@@ -14,3 +11,5 @@ Intermediates/
 .idea/
 build
 cmake-build-debug
+Engine/x64
+x64
