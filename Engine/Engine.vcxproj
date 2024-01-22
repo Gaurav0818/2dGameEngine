@@ -72,7 +72,7 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <IncludePath>$(SolutionDir)Engine\External\SDL\include;$(SolutionDir)Engine\libs;$(IncludePath)</IncludePath>
-    <LibraryPath>$(SolutionDir)Engine\External\SDL\lib\x64;$(SolutionDir)Engine\libs\lua;$(LibraryPath)</LibraryPath>
+    <LibraryPath>$(SolutionDir)Engine\External\SDL\lib\;$(SolutionDir)Engine\libs\lua;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <IncludePath>$(SolutionDir)Engine\External\SDL\include;$(SolutionDir)Engine\libs;$(IncludePath)</IncludePath>
