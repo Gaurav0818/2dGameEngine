@@ -4,13 +4,13 @@
 #include<glm/glm.hpp>
 #include<SDL_image.h>
 
+#include "ECS/ECS.h"
 #include "Logger.h"
 
 Game::Game()
 {
+	isRunning = true;
 	Logger::Info("Game Constructor");
-	Logger::Warning("Game Constructor");
-	Logger::Error("Game Constructor");
 }
 
 Game::~Game()
@@ -94,18 +94,17 @@ void Game::ProcessInput()
 	}
 }
 
-glm::vec2 position;
-glm::vec2 velocity;
-
 /// <summary>
 /// Initialize Stuff
 /// </summary>
 void Game::Setup()
 {
-	isRunning = true;
+	// TODO:
+	// Enitiy tank = registry.CreateEnitity();
+	// tank.AddComponent<TransformComponent>();
+	// tank.AddComponent<SpriteComponent>();
+	// tank.AddComponent<BoxColliderComponent>();
 
-	position = glm::vec2(0.0f, 0.0f);
-	velocity = glm::vec2(100.0f, 10.0f);
 }
 
 
@@ -118,14 +117,10 @@ void Game::Update()
 	
 	millisecLastFrame = SDL_GetTicks();
 
-	position.x += velocity.x *DeltaTime;
-	position.y += velocity.y *DeltaTime;
-
-	if (position.x > winWidth)
-		position.x = 0;
-	
-	if (position.y > winHeight)
-		position.y = 0;
+	//TODO:
+	// MovementSystem.Update();
+	// CollisionSystem.Update();
+	// ....
 }
 
 
@@ -138,7 +133,7 @@ void Game::Render()
 	SDL_SetRenderDrawColor(renderer, 0, 120, 150, 255);
 	SDL_RenderClear(renderer);
 
-	RenderTexture("./assets/images/tree.png", position.x, position.y, 100, 100);
+	//TODO: Render Game Objects...
 
 	SDL_RenderPresent(renderer);
 }
