@@ -7,7 +7,7 @@
 #include "ECS/ECS.h"
 #include "Logger.h"
 
-Game::Game()
+Game::Game(): window(nullptr), renderer(nullptr), winWidth(500), winHeight(500), millisecLastFrame(0), DeltaTime(0)
 {
 	isRunning = true;
 	Logger::Info("Game Constructor");
@@ -18,10 +18,11 @@ Game::~Game()
 	Logger::Info("Game Destructor");
 }
 
-/// <summary>
-/// Initialize window and renderer
-/// </summary>
 
+/**
+ * @brief
+ * Initialize window and renderer
+ */
 void Game::Initialize()
 {
 	if (SDL_Init(SDL_INIT_EVERYTHING) != 0)
@@ -37,7 +38,7 @@ void Game::Initialize()
 	winHeight = 1024;// displayMode.h;
 
 	window = SDL_CreateWindow(
-				NULL, 
+				nullptr, 
 				SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, 
 				winWidth, winHeight,
 				SDL_WINDOW_BORDERLESS);
@@ -57,9 +58,10 @@ void Game::Initialize()
 	}
 }
 
-/// <summary>
-/// Game Loop
-/// </summary>
+/**
+ * @brief
+ * Game Loop
+ */
 void Game::Run()
 {
 	Setup();
@@ -71,9 +73,10 @@ void Game::Run()
 	}
 }
 
-/// <summary>
-/// Takes Care of Input
-/// </summary>
+/**
+ * @brief 
+ * Takes Care of Input
+ */
 void Game::ProcessInput()
 {
 	SDL_Event event;
@@ -94,13 +97,13 @@ void Game::ProcessInput()
 	}
 }
 
-/// <summary>
-/// Initialize Stuff
-/// </summary>
+/**
+ * @brief Initialize Stuff
+ */
 void Game::Setup()
 {
 	// TODO:
-	// Enitiy tank = registry.CreateEnitity();
+	// Entity tank = registry.CreateEntity();
 	// tank.AddComponent<TransformComponent>();
 	// tank.AddComponent<SpriteComponent>();
 	// tank.AddComponent<BoxColliderComponent>();
@@ -108,9 +111,10 @@ void Game::Setup()
 }
 
 
-/// <summary>
-/// Update Stuff
-/// </summary>
+/**
+ * @brief
+ * Update Stuff
+ */
 void Game::Update()
 {
 	DeltaTime = (SDL_GetTicks() - millisecLastFrame) / 1000.0f;
@@ -125,9 +129,10 @@ void Game::Update()
 
 
 
-/// <summary>
-/// Render Stuff
-/// </summary>
+/**
+ * @brief
+ * Render Stuff
+ */
 void Game::Render()
 {
 	SDL_SetRenderDrawColor(renderer, 0, 120, 150, 255);

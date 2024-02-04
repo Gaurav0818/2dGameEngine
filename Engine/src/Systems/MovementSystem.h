@@ -13,7 +13,7 @@ public:
 	void Update()
 	{
 		//TODO:
-		// Loop All Entities that the system is intrested in
+		// Loop All Entities that the system is interested in
 		//for (auto entity: GetEntities())
 		//{
 			// For each entity, get the components and update them
@@ -21,6 +21,4 @@ public:
 
 
 	}
-
-
 };
