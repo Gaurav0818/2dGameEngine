@@ -7,9 +7,11 @@
 #include "ECS/ECS.h"
 #include "Logger.h"
 
-Game::Game(): window(nullptr), renderer(nullptr), winWidth(500), winHeight(500), millisecLastFrame(0), DeltaTime(0)
+Game::Game(): m_window(nullptr), m_renderer(nullptr), m_winWidth(500), m_winHeight(500), m_milliSecLastFrame(0), m_deltaTime(0)
 {
-	isRunning = true;
+	m_isRunning = true;
+	m_registry = std::make_unique<Registry>();
+	
 	Logger::Info("Game Constructor");
 }
 
@@ -34,24 +36,24 @@ void Game::Initialize()
 	SDL_DisplayMode displayMode;
 	SDL_GetCurrentDisplayMode(0, &displayMode);
 
-	winWidth = 1024;// displayMode.w;
-	winHeight = 1024;// displayMode.h;
+	m_winWidth = 1024;// displayMode.w;
+	m_winHeight = 1024;// displayMode.h;
 
-	window = SDL_CreateWindow(
+	m_window = SDL_CreateWindow(
 				nullptr, 
 				SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, 
-				winWidth, winHeight,
+				m_winWidth, m_winHeight,
 				SDL_WINDOW_BORDERLESS);
 
-	if (!window)
+	if (!m_window)
 	{
 		Logger::Error("Error Creating SDL Window.");
 		return;
 	}
 
-	renderer = SDL_CreateRenderer(window, -1, 0);
+	m_renderer = SDL_CreateRenderer(m_window, -1, 0);
 
-	if (!renderer)
+	if (!m_renderer)
 	{
 		Logger::Error("Error Creating SDL Renderer.");
 		return;
@@ -65,7 +67,7 @@ void Game::Initialize()
 void Game::Run()
 {
 	Setup();
-	while (isRunning)
+	while (m_isRunning)
 	{
 		ProcessInput();
 		Update();
@@ -85,11 +87,11 @@ void Game::ProcessInput()
 		switch (event.type)
 		{
 		case SDL_QUIT:
-			isRunning = false;
+			m_isRunning = false;
 			break;
 		case SDL_KEYDOWN:
 			if (event.key.keysym.sym == SDLK_ESCAPE)
-				isRunning = false;
+				m_isRunning = false;
 			break;
 		default:
 			break;
@@ -102,6 +104,9 @@ void Game::ProcessInput()
  */
 void Game::Setup()
 {
+	// Create some entities
+	Entity tank = m_registry->CreateEntity();
+	Entity truck = m_registry->CreateEntity();
 	// TODO:
 	// Entity tank = registry.CreateEntity();
 	// tank.AddComponent<TransformComponent>();
@@ -117,9 +122,9 @@ void Game::Setup()
  */
 void Game::Update()
 {
-	DeltaTime = (SDL_GetTicks() - millisecLastFrame) / 1000.0f;
+	m_deltaTime = (SDL_GetTicks() - m_milliSecLastFrame) / 1000.0f;
 	
-	millisecLastFrame = SDL_GetTicks();
+	m_milliSecLastFrame = SDL_GetTicks();
 
 	//TODO:
 	// MovementSystem.Update();
@@ -135,19 +140,19 @@ void Game::Update()
  */
 void Game::Render()
 {
-	SDL_SetRenderDrawColor(renderer, 0, 120, 150, 255);
-	SDL_RenderClear(renderer);
+	SDL_SetRenderDrawColor(m_renderer, 0, 120, 150, 255);
+	SDL_RenderClear(m_renderer);
 
 	//TODO: Render Game Objects...
 
-	SDL_RenderPresent(renderer);
+	SDL_RenderPresent(m_renderer);
 }
 
 
 void Game::Destroy()
 {
-	SDL_DestroyRenderer(renderer);
-	SDL_DestroyWindow(window);
+	SDL_DestroyRenderer(m_renderer);
+	SDL_DestroyWindow(m_window);
 	SDL_Quit();
 }
 
@@ -156,14 +161,14 @@ void Game::RenderTexture(const char* imagePath, int x, int y, int width, int hei
 	// Load a Collection of Pixels into a Surface
 	SDL_Surface* surface = IMG_Load(imagePath);
 	// Create a Texture from Collection of Pixels
-	SDL_Texture* texture = SDL_CreateTextureFromSurface(renderer, surface);
+	SDL_Texture* texture = SDL_CreateTextureFromSurface(m_renderer, surface);
 	// Free the buffer of Pixels 
 	SDL_FreeSurface(surface);
 
 	// Define a Rectangle to Render the Texture
 	SDL_Rect destRect = { x, y, width, height };
 	// Render the Texture to the Screen using the Renderer and The Rectangle 
-	SDL_RenderCopy(renderer, texture, NULL, &destRect);
+	SDL_RenderCopy(m_renderer, texture, NULL, &destRect);
 	// Free the Texture 
 	SDL_DestroyTexture(texture);
 }

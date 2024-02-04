@@ -184,7 +184,7 @@ private:
 	 * \n [Vector index = component ID]
 	 * \n [Pool index = entity ID]
 	 */
-	std::vector<IPool*> m_componentPools;
+	std::vector<std::shared_ptr<IPool>> m_componentPools;
 
 	/**
 	 * @brief
@@ -200,7 +200,7 @@ private:
 	 * \n [Key = System TypeID]
 	 * \n [Value = System]
 	 */
-	std::unordered_map<std::type_index, System*> m_systems;
+	std::unordered_map<std::type_index, std::shared_ptr<System>> m_systems;
 
 	/**
 	 * @brief
@@ -227,9 +227,10 @@ void Registry::AddComponent(Entity entity, TArgs&&... args)
 		m_componentPools.resize(componentId + 1, nullptr);
 
 	if(m_componentPools[componentId] == nullptr)
-		m_componentPools[componentId] = new Pool<TComponent>();
+		m_componentPools[componentId] = std::make_shared<Pool<TComponent>>();
 	
-	Pool<TComponent>* componentPool = m_componentPools[componentId];
+	std::shared_ptr<Pool<TComponent>> componentPool =
+		std::static_pointer_cast<Pool<TComponent>>(m_componentPools[componentId]);
 	
 	if(entityId >= componentPool->Getsize())
 		componentPool->Resize(entityId + 1);
@@ -261,7 +262,7 @@ bool Registry::HasComponent(Entity entity)
 template <typename TSystem, typename ... TArgs>
 void Registry::AddSystem(TArgs&&... args)
 {
-	TSystem* newSystem(new TSystem(std::forward<TArgs>(args)...));
+	std::shared_ptr<TSystem> newSystem = std::make_shared<TSystem>(std::forward<TArgs>(args)...);
 	m_systems.insert(std::make_pair(std::type_index(typeid(TSystem)), newSystem));
 }
 

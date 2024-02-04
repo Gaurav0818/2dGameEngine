@@ -13,17 +13,27 @@ void System::RemoveEntityToSystem(Entity entity)
 
 void Registry::Update()
 {
-    // TODO: Add Logic to Add and Remove Entities
+    // Add the entities that are waiting to be created to the active system
+    for (auto entity : m_entitiesToBeAdded)
+        AddEntityToSystems(entity);
+
+    m_entitiesToBeAdded.clear();
+
+    // TODO: Add Logic to Remove Entities
 }
 
 Entity Registry::CreateEntity()
 {
-    int entityID = m_numEntities++;
+    int entityId = m_numEntities++;
     
-    Entity entity(entityID);
+    Entity entity(entityId);
     m_entitiesToBeAdded.insert(entity);
 
-    Logger::Info("Entity created with ID: " + std::to_string(entityID));
+    // Make Sure the entityComponentSignatures vector can accomodate the new entity
+    if(entityId >= static_cast<int>(m_entityComponentSignatures.size()))
+        m_entityComponentSignatures.resize(entityId + 1);
+    
+    Logger::Info("Entity created with ID: " + std::to_string(entityId));
     
     return entity;
 }

@@ -3,6 +3,8 @@
 
 #include <SDL.h>
 
+#include "ECS/ECS.h"
+
 class Game
 {
 public:
@@ -20,15 +22,15 @@ public:
     void RenderTexture(const char* imagePath, int x, int y, int width, int height);
 
 private:
-    SDL_Window* window;
-    SDL_Renderer* renderer;
+    SDL_Window* m_window;
+    SDL_Renderer* m_renderer;
+    std::unique_ptr<Registry> m_registry;
+    
+    bool m_isRunning;
+    int m_winWidth, m_winHeight;
 
-    bool isRunning;
-    int winWidth;
-    int winHeight;
-
-    int millisecLastFrame;
-    double DeltaTime;
+    int m_milliSecLastFrame;
+    double m_deltaTime;
 };
 
 #endif
