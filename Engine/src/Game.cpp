@@ -6,6 +6,8 @@
 
 #include "ECS/ECS.h"
 #include "Logger.h"
+#include "Components/RigidBodyComponent.h"
+#include "Components/TransformComponent.h"
 
 Game::Game(): m_window(nullptr), m_renderer(nullptr), m_winWidth(500), m_winHeight(500), m_milliSecLastFrame(0), m_deltaTime(0)
 {
@@ -106,13 +108,11 @@ void Game::Setup()
 {
 	// Create some entities
 	Entity tank = m_registry->CreateEntity();
-	Entity truck = m_registry->CreateEntity();
-	// TODO:
-	// Entity tank = registry.CreateEntity();
-	// tank.AddComponent<TransformComponent>();
-	// tank.AddComponent<SpriteComponent>();
-	// tank.AddComponent<BoxColliderComponent>();
-
+	
+	// Add a Component to the entity
+	m_registry->AddComponent<TransformComponent>(tank, glm::vec2(100, 100), glm::vec2(1, 1), 0);
+	tank.AddComponent<RigidBodyComponent>(glm::vec2(-10, 0));
+	tank.RemoveComponent<TransformComponent>();
 }
 
 

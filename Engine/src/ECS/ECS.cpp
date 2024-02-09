@@ -27,6 +27,8 @@ Entity Registry::CreateEntity()
     int entityId = m_numEntities++;
     
     Entity entity(entityId);
+    entity.SetRegistry(this);
+
     m_entitiesToBeAdded.insert(entity);
 
     // Make Sure the entityComponentSignatures vector can accomodate the new entity
