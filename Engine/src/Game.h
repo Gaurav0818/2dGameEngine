@@ -10,7 +10,7 @@ class Game
 public:
     Game();
     ~Game();
-
+	
     void Initialize();
     void Run();
     void ProcessInput();
@@ -21,6 +21,10 @@ public:
 
     void RenderTexture(const char* imagePath, int x, int y, int width, int height);
 
+
+public:
+	double GetDeltaTime()  { return m_deltaTime; }
+
 private:
     SDL_Window* m_window;
     SDL_Renderer* m_renderer;
@@ -30,7 +34,7 @@ private:
     int m_winWidth, m_winHeight;
 
     int m_milliSecLastFrame;
-    double m_deltaTime;
+	double m_deltaTime;
 };
 
 #endif

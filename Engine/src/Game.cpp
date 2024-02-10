@@ -8,8 +8,10 @@
 #include "Logger.h"
 #include "Components/RigidBodyComponent.h"
 #include "Components/TransformComponent.h"
+#include "Systems/MovementSystem.h"
+#include "Systems/RenderSystem.h"
 
-Game::Game(): m_window(nullptr), m_renderer(nullptr), m_winWidth(500), m_winHeight(500), m_milliSecLastFrame(0), m_deltaTime(0)
+Game::Game(): m_window(nullptr), m_renderer(nullptr), m_winWidth(500), m_winHeight(500), m_milliSecLastFrame(0)
 {
 	m_isRunning = true;
 	m_registry = std::make_unique<Registry>();
@@ -106,13 +108,23 @@ void Game::ProcessInput()
  */
 void Game::Setup()
 {
+	// Add a System to the Registry
+	 m_registry->AddSystem<MovementSystem>();
+	 m_registry->AddSystem<RenderSystem>();
+	
 	// Create some entities
 	Entity tank = m_registry->CreateEntity();
 	
 	// Add a Component to the entity
 	m_registry->AddComponent<TransformComponent>(tank, glm::vec2(100, 100), glm::vec2(1, 1), 0);
-	tank.AddComponent<RigidBodyComponent>(glm::vec2(-10, 0));
-	tank.RemoveComponent<TransformComponent>();
+	tank.AddComponent<RigidBodyComponent>(glm::vec2(10, 10));
+	tank.AddComponent<SpriteComponent>(10,10);
+
+	// Create some entities
+	Entity tree = m_registry->CreateEntity();
+	// Add a Component to the entity
+	tree.AddComponent<TransformComponent>( glm::vec2(500, 500), glm::vec2(1, 1), 0);
+	tree.AddComponent<SpriteComponent>(100,100);
 }
 
 
@@ -123,16 +135,15 @@ void Game::Setup()
 void Game::Update()
 {
 	m_deltaTime = (SDL_GetTicks() - m_milliSecLastFrame) / 1000.0f;
-	
+	// Store current time as Previous Frame Time
 	m_milliSecLastFrame = SDL_GetTicks();
+	
+	// Update the Registry
+	m_registry->Update();
 
-	//TODO:
-	// MovementSystem.Update();
-	// CollisionSystem.Update();
-	// ....
+	// Invoke all the Systems that needs to update
+	m_registry->GetSystem<MovementSystem>().Update(m_deltaTime);
 }
-
-
 
 /**
  * @brief
@@ -143,7 +154,8 @@ void Game::Render()
 	SDL_SetRenderDrawColor(m_renderer, 0, 120, 150, 255);
 	SDL_RenderClear(m_renderer);
 
-	//TODO: Render Game Objects...
+	// Invoke all the Systems that needs to Render
+	m_registry->GetSystem<RenderSystem>().Update(m_renderer);
 
 	SDL_RenderPresent(m_renderer);
 }

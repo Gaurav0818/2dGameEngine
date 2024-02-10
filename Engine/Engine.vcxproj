@@ -146,6 +146,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Components\RigidBodyComponent.h" />
+    <ClInclude Include="src\Components\SpriteComponent.h" />
     <ClInclude Include="src\Components\TransformComponent.h" />
     <ClInclude Include="src\ECS\ECS.h" />
     <ClInclude Include="src\Logger.h" />
@@ -232,6 +233,7 @@
     <ClInclude Include="libs\External\SDL\include\SDL_video.h" />
     <ClInclude Include="libs\External\SDL\include\SDL_vulkan.h" />
     <ClInclude Include="src\Systems\MovementSystem.h" />
+    <ClInclude Include="src\Systems\RenderSystem.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
