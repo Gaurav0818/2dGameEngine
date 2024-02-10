@@ -119,15 +119,9 @@ void Game::Setup()
 	Entity tank = m_registry->CreateEntity();
 	
 	// Add a Component to the entity
-	m_registry->AddComponent<TransformComponent>(tank, glm::vec2(100, 100), glm::vec2(1, 1), 0);
-	tank.AddComponent<RigidBodyComponent>(glm::vec2(10, 10));
-	tank.AddComponent<SpriteComponent>("tank-image",10,10);
-
-	// Create some entities
-	Entity tree = m_registry->CreateEntity();
-	// Add a Component to the entity
-	tree.AddComponent<TransformComponent>( glm::vec2(500, 500), glm::vec2(1, 1), 0);
-	tree.AddComponent<SpriteComponent>("tank-image",100,100);
+	tank.AddComponent<TransformComponent>(glm::vec2(100, 100), glm::vec2(1, 1), 0);
+	tank.AddComponent<RigidBodyComponent>(glm::vec2(10, 0));
+	tank.AddComponent<SpriteComponent>("tank-image",32,32);
 }
 
 
@@ -158,7 +152,7 @@ void Game::Render()
 	SDL_RenderClear(m_renderer);
 
 	// Invoke all the Systems that needs to Render
-	m_registry->GetSystem<RenderSystem>().Update(m_renderer);
+	m_registry->GetSystem<RenderSystem>().Update(m_renderer, m_assetManager);
 
 	SDL_RenderPresent(m_renderer);
 }
