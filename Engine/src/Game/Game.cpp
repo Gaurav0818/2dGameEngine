@@ -9,9 +9,11 @@
 
 #include "../Components/RigidBodyComponent.h"
 #include "../Components/TransformComponent.h"
+#include "../Systems/AnimationSystem.h"
 #include "../Systems/MovementSystem.h"
 #include "../Systems/RenderSystem.h"
 
+struct AnimationComponent;
 Game::Game(): m_window(nullptr), m_renderer(nullptr), m_winWidth(500), m_winHeight(500), m_milliSecLastFrame(0)
 {
 	m_isRunning = true;
@@ -25,7 +27,6 @@ Game::~Game()
 {
 	Logger::Info("Game Destructor");
 }
-
 
 /**
  * @brief
@@ -104,14 +105,18 @@ void Game::ProcessInput()
 		}
 	}
 }
+
 void Game::LoadLevel()
 {
 	// Add a System to the Registry
 	m_registry->AddSystem<MovementSystem>();
 	m_registry->AddSystem<RenderSystem>();
+	m_registry->AddSystem<AnimationSystem>();
 
 	m_assetManager->AddTexture( m_renderer, "tank-image", "./assets/images/tank-panther-right.png");
 	m_assetManager->AddTexture( m_renderer, "tileMap-image", "./assets/tilemaps/jungle.png");
+	m_assetManager->AddTexture( m_renderer, "chopper-image", "./assets/images/chopper.png");
+	m_assetManager->AddTexture( m_renderer, "radar-image", "./assets/images/radar.png");
 
 	// Load the tileMap
 	int tileSize = 32;
@@ -141,12 +146,19 @@ void Game::LoadLevel()
 	mapFile.close();
 	
 	// Create some entities
-	Entity tank = m_registry->CreateEntity();
+	Entity chopper = m_registry->CreateEntity();
 	
 	// Add a Component to the entity
-	tank.AddComponent<TransformComponent>(glm::vec2(100, 100), glm::vec2(1, 1), 0);
-	tank.AddComponent<RigidBodyComponent>(glm::vec2(10, 0));
-	tank.AddComponent<SpriteComponent>("tank-image",32,32,1);
+	chopper.AddComponent<TransformComponent>(glm::vec2(100, 100), glm::vec2(3, 3), 0);
+	chopper.AddComponent<RigidBodyComponent>(glm::vec2(10, 0));
+	chopper.AddComponent<SpriteComponent>("chopper-image", 32, 32, 1);
+	chopper.AddComponent<AnimationComponent>(2, 15, true);
+
+	Entity radar = m_registry->CreateEntity();
+
+	radar.AddComponent<TransformComponent>(glm::vec2(250,250), glm::vec2(2,2), 0);
+	radar.AddComponent<SpriteComponent>("radar-image", 64, 64, 2);
+	radar.AddComponent<AnimationComponent>(8, 8, true);
 	
 }
 
@@ -173,6 +185,7 @@ void Game::Update()
 
 	// Invoke all the Systems that needs to update
 	m_registry->GetSystem<MovementSystem>().Update(m_deltaTime);
+	m_registry->GetSystem<AnimationSystem>().Update();
 }
 
 /**
@@ -190,27 +203,9 @@ void Game::Render()
 	SDL_RenderPresent(m_renderer);
 }
 
-
 void Game::Destroy()
 {
 	SDL_DestroyRenderer(m_renderer);
 	SDL_DestroyWindow(m_window);
 	SDL_Quit();
-}
-
-void Game::RenderTexture(const char* imagePath, int x, int y, int width, int height)
-{
-	// Load a Collection of Pixels into a Surface
-	SDL_Surface* surface = IMG_Load(imagePath);
-	// Create a Texture from Collection of Pixels
-	SDL_Texture* texture = SDL_CreateTextureFromSurface(m_renderer, surface);
-	// Free the buffer of Pixels 
-	SDL_FreeSurface(surface);
-
-	// Define a Rectangle to Render the Texture
-	SDL_Rect destRect = { x, y, width, height };
-	// Render the Texture to the Screen using the Renderer and The Rectangle 
-	SDL_RenderCopy(m_renderer, texture, NULL, &destRect);
-	// Free the Texture 
-	SDL_DestroyTexture(texture);
 }
