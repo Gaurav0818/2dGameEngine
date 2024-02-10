@@ -15,6 +15,7 @@ public:
     void Initialize();
     void Run();
     void ProcessInput();
+	void LoadLevel();
     void Setup();
     void Update();
     void Render();

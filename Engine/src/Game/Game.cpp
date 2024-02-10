@@ -1,5 +1,6 @@
 #include "Game.h"
 
+#include <fstream>
 #include<glm/glm.hpp>
 #include<SDL_image.h>
 
@@ -41,8 +42,8 @@ void Game::Initialize()
 	SDL_DisplayMode displayMode;
 	SDL_GetCurrentDisplayMode(0, &displayMode);
 
-	m_winWidth = 1024;// displayMode.w;
-	m_winHeight = 1024;// displayMode.h;
+	m_winWidth = 1000;// displayMode.w;
+	m_winHeight = 1000;// displayMode.h;
 
 	m_window = SDL_CreateWindow(
 				nullptr, 
@@ -103,18 +104,42 @@ void Game::ProcessInput()
 		}
 	}
 }
-
-/**
- * @brief Initialize Stuff
- */
-void Game::Setup()
+void Game::LoadLevel()
 {
 	// Add a System to the Registry
-	 m_registry->AddSystem<MovementSystem>();
-	 m_registry->AddSystem<RenderSystem>();
+	m_registry->AddSystem<MovementSystem>();
+	m_registry->AddSystem<RenderSystem>();
 
 	m_assetManager->AddTexture( m_renderer, "tank-image", "./assets/images/tank-panther-right.png");
+	m_assetManager->AddTexture( m_renderer, "tileMap-image", "./assets/tilemaps/jungle.png");
 
+	// Load the tileMap
+	int tileSize = 32;
+	double tileScale = 3.0;
+	int mapNumCols = 25;
+	int mapNumRows = 20;
+
+	std::fstream mapFile;
+	mapFile.open("./assets/tilemaps/jungle.map");
+
+	for(int y = 0; y <mapNumRows; y++)
+	{
+		for(int x = 0; x < mapNumCols; x++)
+		{
+			char ch;
+			mapFile.get(ch);
+			int sourceRectY = atoi(&ch) * tileSize;
+			mapFile.get(ch);
+			int sourceRectX = atoi(&ch) * tileSize;
+			mapFile.ignore();
+
+			Entity tile = m_registry->CreateEntity();
+			tile.AddComponent<TransformComponent>(glm::vec2(x * tileSize * tileScale, y * tileSize * tileScale), glm::vec2(tileScale, tileScale), 0);
+			tile.AddComponent<SpriteComponent>("tileMap-image", tileSize, tileSize, sourceRectX, sourceRectY);
+		}
+	}
+	mapFile.close();
+	
 	// Create some entities
 	Entity tank = m_registry->CreateEntity();
 	
@@ -124,6 +149,13 @@ void Game::Setup()
 	tank.AddComponent<SpriteComponent>("tank-image",32,32);
 }
 
+/**
+ * @brief Initialize Stuff
+ */
+void Game::Setup()
+{
+	LoadLevel();
+}
 
 /**
  * @brief

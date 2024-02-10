@@ -26,8 +26,8 @@ public:
 				{
 					static_cast<int>(transform.position.x),
 					static_cast<int>(transform.position.y),
-					static_cast<int>(sprite.width * transform.scale.x),
-					static_cast<int>(sprite.height * transform.scale.y)
+					static_cast<int>(transform.scale.x * static_cast<float>(sprite.srcRect.w)),
+					static_cast<int>(transform.scale.y * static_cast<float>(sprite.srcRect.h))
 				};
 
 			SDL_RenderCopyEx(
