@@ -8,7 +8,7 @@
 #include <typeindex>
 #include <unordered_map>
 
-#include "../Logger.h"
+#include "../Logger/Logger.h"
 
 constexpr unsigned int MAX_COMPONENTS = 32;
 

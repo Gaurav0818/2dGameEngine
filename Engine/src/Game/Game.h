@@ -3,7 +3,7 @@
 
 #include <SDL.h>
 
-#include "ECS/ECS.h"
+#include "../ECS/ECS.h"
 
 class Game
 {

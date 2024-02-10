@@ -1,5 +1,5 @@
 #include "ECS.h"
-#include "../Logger.h"
+#include "../Logger/Logger.h"
 
 void System::AddEntityToSystem(Entity entity)
 {

@@ -4,12 +4,13 @@
 #include<glm/glm.hpp>
 #include<SDL_image.h>
 
-#include "ECS/ECS.h"
-#include "Logger.h"
-#include "Components/RigidBodyComponent.h"
-#include "Components/TransformComponent.h"
-#include "Systems/MovementSystem.h"
-#include "Systems/RenderSystem.h"
+#include "../ECS/ECS.h"
+#include "../Logger/Logger.h"
+
+#include "../Components/RigidBodyComponent.h"
+#include "../Components/TransformComponent.h"
+#include "../Systems/MovementSystem.h"
+#include "../Systems/RenderSystem.h"
 
 Game::Game(): m_window(nullptr), m_renderer(nullptr), m_winWidth(500), m_winHeight(500), m_milliSecLastFrame(0)
 {
