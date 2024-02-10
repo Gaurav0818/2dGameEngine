@@ -1,5 +1,7 @@
 #pragma once
 
+#include <algorithm>
+
 #include "../ECS/ECS.h"
 #include "../Components/TransformComponent.h"
 #include "../Components/SpriteComponent.h"
@@ -15,7 +17,18 @@ public:
 
 	void Update(SDL_Renderer* renderer, std::unique_ptr<AssetManager>& assetManager)
 	{
-		for(auto entity : GetSystemEntities())
+		// Get all system entities
+		auto entities = GetSystemEntities();
+		
+		// Sort entities by z-index
+		std::sort(entities.begin(), entities.end(), [](const Entity& a, const Entity& b)
+		{
+			const auto spriteA = a.GetComponent<SpriteComponent>();
+			const auto spriteB = b.GetComponent<SpriteComponent>();
+			return spriteA.zIndex < spriteB.zIndex;
+		});
+
+		for(auto entity : entities)
 		{
 			const auto transform = entity.GetComponent<TransformComponent>();
 			const auto sprite = entity.GetComponent<SpriteComponent>();

@@ -135,7 +135,7 @@ void Game::LoadLevel()
 
 			Entity tile = m_registry->CreateEntity();
 			tile.AddComponent<TransformComponent>(glm::vec2(x * tileSize * tileScale, y * tileSize * tileScale), glm::vec2(tileScale, tileScale), 0);
-			tile.AddComponent<SpriteComponent>("tileMap-image", tileSize, tileSize, sourceRectX, sourceRectY);
+			tile.AddComponent<SpriteComponent>("tileMap-image", tileSize, tileSize, 0, sourceRectX, sourceRectY);
 		}
 	}
 	mapFile.close();
@@ -146,7 +146,8 @@ void Game::LoadLevel()
 	// Add a Component to the entity
 	tank.AddComponent<TransformComponent>(glm::vec2(100, 100), glm::vec2(1, 1), 0);
 	tank.AddComponent<RigidBodyComponent>(glm::vec2(10, 0));
-	tank.AddComponent<SpriteComponent>("tank-image",32,32);
+	tank.AddComponent<SpriteComponent>("tank-image",32,32,1);
+	
 }
 
 /**
