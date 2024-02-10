@@ -3,6 +3,7 @@
 
 #include <SDL.h>
 
+#include "../AssetManager/AssetManager.h"
 #include "../ECS/ECS.h"
 
 class Game
@@ -29,6 +30,7 @@ private:
     SDL_Window* m_window;
     SDL_Renderer* m_renderer;
     std::unique_ptr<Registry> m_registry;
+    std::unique_ptr<AssetManager> m_assetManager;
     
     bool m_isRunning;
     int m_winWidth, m_winHeight;

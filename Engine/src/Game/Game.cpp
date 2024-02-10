@@ -1,5 +1,4 @@
 #include "Game.h"
-#include <iostream>
 
 #include<glm/glm.hpp>
 #include<SDL_image.h>
@@ -16,6 +15,7 @@ Game::Game(): m_window(nullptr), m_renderer(nullptr), m_winWidth(500), m_winHeig
 {
 	m_isRunning = true;
 	m_registry = std::make_unique<Registry>();
+	m_assetManager = std::make_unique<AssetManager>();
 	
 	Logger::Info("Game Constructor");
 }
@@ -112,20 +112,22 @@ void Game::Setup()
 	// Add a System to the Registry
 	 m_registry->AddSystem<MovementSystem>();
 	 m_registry->AddSystem<RenderSystem>();
-	
+
+	m_assetManager->AddTexture( m_renderer, "tank-image", "./assets/images/tank-panther-right.png");
+
 	// Create some entities
 	Entity tank = m_registry->CreateEntity();
 	
 	// Add a Component to the entity
 	m_registry->AddComponent<TransformComponent>(tank, glm::vec2(100, 100), glm::vec2(1, 1), 0);
 	tank.AddComponent<RigidBodyComponent>(glm::vec2(10, 10));
-	tank.AddComponent<SpriteComponent>(10,10);
+	tank.AddComponent<SpriteComponent>("tank-image",10,10);
 
 	// Create some entities
 	Entity tree = m_registry->CreateEntity();
 	// Add a Component to the entity
 	tree.AddComponent<TransformComponent>( glm::vec2(500, 500), glm::vec2(1, 1), 0);
-	tree.AddComponent<SpriteComponent>(100,100);
+	tree.AddComponent<SpriteComponent>("tank-image",100,100);
 }
 
 
