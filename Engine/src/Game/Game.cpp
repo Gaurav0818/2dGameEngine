@@ -4,12 +4,14 @@
 #include<glm/glm.hpp>
 #include<SDL_image.h>
 
+#include "../Components/BoxColliderComponent.h"
 #include "../ECS/ECS.h"
 #include "../Logger/Logger.h"
 
 #include "../Components/RigidBodyComponent.h"
 #include "../Components/TransformComponent.h"
 #include "../Systems/AnimationSystem.h"
+#include "../Systems/BoxColliderSystem.h"
 #include "../Systems/MovementSystem.h"
 #include "../Systems/RenderSystem.h"
 
@@ -112,6 +114,7 @@ void Game::LoadLevel()
 	m_registry->AddSystem<MovementSystem>();
 	m_registry->AddSystem<RenderSystem>();
 	m_registry->AddSystem<AnimationSystem>();
+	m_registry->AddSystem<BoxColliderSystem>();
 
 	m_assetManager->AddTexture( m_renderer, "tank-image", "./assets/images/tank-panther-right.png");
 	m_assetManager->AddTexture( m_renderer, "tileMap-image", "./assets/tilemaps/jungle.png");
@@ -153,12 +156,14 @@ void Game::LoadLevel()
 	chopper.AddComponent<RigidBodyComponent>(glm::vec2(10, 0));
 	chopper.AddComponent<SpriteComponent>("chopper-image", 32, 32, 1);
 	chopper.AddComponent<AnimationComponent>(2, 15, true);
+	chopper.AddComponent<BoxColliderComponent>(32.0f, 32.0f, glm::vec2(0,0));
 
 	Entity radar = m_registry->CreateEntity();
 
-	radar.AddComponent<TransformComponent>(glm::vec2(250,250), glm::vec2(2,2), 0);
+	radar.AddComponent<TransformComponent>(glm::vec2(250, 75), glm::vec2(2,2), 0);
 	radar.AddComponent<SpriteComponent>("radar-image", 64, 64, 2);
 	radar.AddComponent<AnimationComponent>(8, 8, true);
+	radar.AddComponent<BoxColliderComponent>(64.0f, 64.0f, glm::vec2(0,0));
 	
 }
 
@@ -186,6 +191,7 @@ void Game::Update()
 	// Invoke all the Systems that needs to update
 	m_registry->GetSystem<MovementSystem>().Update(m_deltaTime);
 	m_registry->GetSystem<AnimationSystem>().Update();
+	m_registry->GetSystem<BoxColliderSystem>().Update();
 }
 
 /**
