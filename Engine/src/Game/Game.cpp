@@ -13,6 +13,7 @@
 #include "../Systems/AnimationSystem.h"
 #include "../Systems/BoxColliderSystem.h"
 #include "../Systems/MovementSystem.h"
+#include "../Systems/RenderBoxCollisionSystem.h"
 #include "../Systems/RenderSystem.h"
 
 struct AnimationComponent;
@@ -80,6 +81,7 @@ void Game::Run()
 	{
 		ProcessInput();
 		Update();
+		FixedUpdate();
 		Render();
 	}
 }
@@ -101,6 +103,8 @@ void Game::ProcessInput()
 		case SDL_KEYDOWN:
 			if (event.key.keysym.sym == SDLK_ESCAPE)
 				m_isRunning = false;
+			if(event.key.keysym.sym == SDLK_d)
+				m_isDebug = !m_isDebug;
 			break;
 		default:
 			break;
@@ -115,6 +119,7 @@ void Game::LoadLevel()
 	m_registry->AddSystem<RenderSystem>();
 	m_registry->AddSystem<AnimationSystem>();
 	m_registry->AddSystem<BoxColliderSystem>();
+	m_registry->AddSystem<RenderBoxCollisionSystem>();
 
 	m_assetManager->AddTexture( m_renderer, "tank-image", "./assets/images/tank-panther-right.png");
 	m_assetManager->AddTexture( m_renderer, "tileMap-image", "./assets/tilemaps/jungle.png");
@@ -191,6 +196,18 @@ void Game::Update()
 	// Invoke all the Systems that needs to update
 	m_registry->GetSystem<MovementSystem>().Update(m_deltaTime);
 	m_registry->GetSystem<AnimationSystem>().Update();
+
+}
+
+void Game::FixedUpdate()
+{
+	m_fixedDeltaTime += m_deltaTime;
+	
+	if(m_fixedDeltaTime < 1.0f/30)
+		return;
+
+	m_fixedDeltaTime = 0.0f;
+	
 	m_registry->GetSystem<BoxColliderSystem>().Update();
 }
 
@@ -205,6 +222,9 @@ void Game::Render()
 
 	// Invoke all the Systems that needs to Render
 	m_registry->GetSystem<RenderSystem>().Update(m_renderer, m_assetManager);
+	
+	if(m_isDebug)
+		m_registry->GetSystem<RenderBoxCollisionSystem>().Update(m_renderer);
 
 	SDL_RenderPresent(m_renderer);
 }

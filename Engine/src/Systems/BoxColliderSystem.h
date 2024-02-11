@@ -16,31 +16,49 @@ public:
 
 	void Update()
 	{
-		// TODO:
-		// Check all entity that has box collider
-		// to see if they have box collider
-		for (auto entity1: GetSystemEntities())
+		auto entities = GetSystemEntities();
+
+		for(auto entity: entities)
 		{
-			for (auto entiry2: GetSystemEntities())
+			auto& aCollider = entity.GetComponent<BoxColliderComponent>();
+			aCollider.isColliding = false;
+		}
+		
+		for (auto it1 = entities.begin(); it1 != entities.end(); ++it1)
+		{
+			auto& a = *it1;
+			auto& aCollider = a.GetComponent<BoxColliderComponent>();
+			auto& aTransform = a.GetComponent<TransformComponent>();
+			
+			for (auto it2 = it1 + 1; it2 != entities.end(); ++it2)
 			{
-				if (entity1 == entiry2)
-					continue;
-				
-				
-				auto& collider1 = entity1.GetComponent<BoxColliderComponent>();
-				auto& transform1 = entity1.GetComponent<TransformComponent>();
-				
-				auto& collider2 = entiry2.GetComponent<BoxColliderComponent>();
-				auto& transform2 = entiry2.GetComponent<TransformComponent>();
-				
-				if (transform1.position.x < transform2.position.x + collider2.width * transform2.scale.x &&
-					transform1.position.x + transform1.scale.x * collider1.width > transform2.position.x  &&
-					transform1.position.y < transform2.position.y + collider2.height * transform2.scale.y &&
-					transform1.position.y + transform1.scale.y * collider1.height > transform2.position.y )
+				auto& b = *it2;
+				auto& bCollider = b.GetComponent<BoxColliderComponent>();
+				auto& bTransform = b.GetComponent<TransformComponent>();
+
+				if (CheckAABoxCollision(
+					aTransform.position.x + aCollider.offset.x,
+					aTransform.position.y + aCollider.offset.y,
+					aCollider.width * aTransform.scale.x,
+					aCollider.height * aTransform.scale.y,
+					bTransform.position.x + bCollider.offset.x,
+					bTransform.position.y + bCollider.offset.y,
+					bCollider.width * bTransform.scale.x,
+					bCollider.height * bTransform.scale.y))
 				{
-					Logger::Info("Collision detected");
+					aCollider.isColliding = true;
+					bCollider.isColliding = true;
 				}
 			}
 		}
 	}
+
+	bool CheckAABoxCollision(double aX, double aY, double aW, double aH, double bX, double bY, double bW, double bH)
+	{
+		return{	aX < bX + bW &&
+				aX + aW > bX &&
+				aY < bY + bH &&
+				aY + aH > bY };
+	}
+
 };

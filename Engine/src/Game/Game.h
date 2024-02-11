@@ -18,6 +18,7 @@ public:
 	void LoadLevel();
     void Setup();
     void Update();
+	void FixedUpdate();
     void Render();
     void Destroy();
 
@@ -33,11 +34,11 @@ private:
     std::unique_ptr<Registry> m_registry;
     std::unique_ptr<AssetManager> m_assetManager;
     
-    bool m_isRunning;
+    bool m_isRunning, m_isDebug;
     int m_winWidth, m_winHeight;
 
     int m_milliSecLastFrame;
-	double m_deltaTime;
+	double m_deltaTime, m_fixedDeltaTime;
 };
 
 #endif
