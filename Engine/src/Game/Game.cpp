@@ -161,14 +161,14 @@ void Game::LoadLevel()
 	chopper.AddComponent<RigidBodyComponent>(glm::vec2(10, 0));
 	chopper.AddComponent<SpriteComponent>("chopper-image", 32, 32, 1);
 	chopper.AddComponent<AnimationComponent>(2, 15, true);
-	chopper.AddComponent<BoxColliderComponent>(32.0f, 32.0f, glm::vec2(0,0));
+	chopper.AddComponent<BoxColliderComponent>(32, 32);
 
 	Entity radar = m_registry->CreateEntity();
 
 	radar.AddComponent<TransformComponent>(glm::vec2(250, 75), glm::vec2(2,2), 0);
 	radar.AddComponent<SpriteComponent>("radar-image", 64, 64, 2);
 	radar.AddComponent<AnimationComponent>(8, 8, true);
-	radar.AddComponent<BoxColliderComponent>(64.0f, 64.0f, glm::vec2(0,0));
+	radar.AddComponent<BoxColliderComponent>(64, 64);
 	
 }
 

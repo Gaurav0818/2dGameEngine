@@ -48,6 +48,9 @@ public:
 				{
 					aCollider.isColliding = true;
 					bCollider.isColliding = true;
+
+					a.Kill();
+					b.Kill();
 				}
 			}
 		}

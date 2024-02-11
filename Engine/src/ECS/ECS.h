@@ -3,6 +3,7 @@
 
 #include <vector>
 #include <bitset>
+#include <deque>
 #include <memory>
 #include <set>
 #include <typeindex>
@@ -58,7 +59,7 @@ public:
 	int GetId() const { return m_id; }
 
 	void SetRegistry(class Registry* registry) { m_registry = registry; }
-
+	void Kill();
 	// Component Management
 	template <typename TComponent, typename ...TArgs> void AddComponent( TArgs&& ...args);
 	template <typename TComponent> void RemoveComponent();
@@ -89,7 +90,7 @@ public:
 	~System() = default;
 
 	void AddEntityToSystem(Entity entity);
-	void RemoveEntityToSystem(Entity entity);
+	void RemoveEntityFromSystem(Entity entity);
 	std::vector<Entity> GetSystemEntities() const { return m_Entities; }
 		
 	const Signature& GetComponentSignature() const { return m_ComponentSignature; }
@@ -157,6 +158,7 @@ public:
 
 	// Entity Management
 	Entity CreateEntity();
+	void KillEntity(Entity entity);
 
 	// Component Management
 	template <typename TComponent, typename ...TArgs> void AddComponent(Entity entity, TArgs&& ...args);
@@ -176,6 +178,7 @@ public:
 	 * that are interested in it.
 	 */
 	void AddEntityToSystems(Entity entity) const;
+	void RemoveEntityFromSystems(Entity entity);
 
 	// TODO:
 	// KillEntity()
@@ -188,6 +191,8 @@ public:
 
 private:
 	int m_numEntities = 0;
+
+	std::deque<int> m_freeIds;
 
 	/** 
 	 * @brief 
