@@ -4,6 +4,7 @@
 #include "../Logger/Logger.h"
 #include "../Components/BoxColliderComponent.h"
 #include "../Components/TransformComponent.h"
+#include "../Events/CollisionEvent.h"
 
 class BoxColliderSystem: public System
 {
@@ -14,7 +15,7 @@ public:
 		RequireComponent<BoxColliderComponent>();
 	}
 
-	void Update()
+	void Update(std::unique_ptr<EventManager>& eventManager)
 	{
 		auto entities = GetSystemEntities();
 
@@ -49,8 +50,8 @@ public:
 					aCollider.isColliding = true;
 					bCollider.isColliding = true;
 
-					a.Kill();
-					b.Kill();
+					// Create Collision Event
+					eventManager->EmitEvent<CollisionEvent>(a , b);
 				}
 			}
 		}

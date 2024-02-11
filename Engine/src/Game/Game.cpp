@@ -12,6 +12,7 @@
 #include "../Components/TransformComponent.h"
 #include "../Systems/AnimationSystem.h"
 #include "../Systems/BoxColliderSystem.h"
+#include "../Systems/DamageSystem.h"
 #include "../Systems/MovementSystem.h"
 #include "../Systems/RenderBoxCollisionSystem.h"
 #include "../Systems/RenderSystem.h"
@@ -22,6 +23,7 @@ Game::Game(): m_window(nullptr), m_renderer(nullptr), m_winWidth(500), m_winHeig
 	m_isRunning = true;
 	m_registry = std::make_unique<Registry>();
 	m_assetManager = std::make_unique<AssetManager>();
+	m_eventManager = std::make_unique<EventManager>();
 	
 	Logger::Info("Game Constructor");
 }
@@ -120,6 +122,7 @@ void Game::LoadLevel()
 	m_registry->AddSystem<AnimationSystem>();
 	m_registry->AddSystem<BoxColliderSystem>();
 	m_registry->AddSystem<RenderBoxCollisionSystem>();
+	m_registry->AddSystem<DamageSystem>();
 
 	m_assetManager->AddTexture( m_renderer, "tank-image", "./assets/images/tank-panther-right.png");
 	m_assetManager->AddTexture( m_renderer, "tileMap-image", "./assets/tilemaps/jungle.png");
@@ -189,6 +192,12 @@ void Game::Update()
 	m_deltaTime = (SDL_GetTicks() - m_milliSecLastFrame) / 1000.0f;
 	// Store current time as Previous Frame Time
 	m_milliSecLastFrame = SDL_GetTicks();
+
+	// Reset all event handlers for the current frame
+	m_eventManager->Reset();
+	
+	//Perform the subscription to the events
+	m_registry->GetSystem<DamageSystem>().SubscribeToEvents(m_eventManager);
 	
 	// Update the Registry
 	m_registry->Update();
@@ -208,7 +217,7 @@ void Game::FixedUpdate()
 
 	m_fixedDeltaTime = 0.0f;
 	
-	m_registry->GetSystem<BoxColliderSystem>().Update();
+	m_registry->GetSystem<BoxColliderSystem>().Update(m_eventManager);
 }
 
 /**
