@@ -13,6 +13,7 @@
 #include "../Systems/AnimationSystem.h"
 #include "../Systems/BoxColliderSystem.h"
 #include "../Systems/DamageSystem.h"
+#include "../Systems/KeyboardInputSystem.h"
 #include "../Systems/MovementSystem.h"
 #include "../Systems/RenderBoxCollisionSystem.h"
 #include "../Systems/RenderSystem.h"
@@ -107,6 +108,9 @@ void Game::ProcessInput()
 				m_isRunning = false;
 			if(event.key.keysym.sym == SDLK_d)
 				m_isDebug = !m_isDebug;
+
+			m_eventManager->EmitEvent<KeyPressedEvent>(event.key.keysym.sym);
+			
 			break;
 		default:
 			break;
@@ -123,6 +127,7 @@ void Game::LoadLevel()
 	m_registry->AddSystem<BoxColliderSystem>();
 	m_registry->AddSystem<RenderBoxCollisionSystem>();
 	m_registry->AddSystem<DamageSystem>();
+	m_registry->AddSystem<KeyboardInputSystem>();
 
 	m_assetManager->AddTexture( m_renderer, "tank-image", "./assets/images/tank-panther-right.png");
 	m_assetManager->AddTexture( m_renderer, "tileMap-image", "./assets/tilemaps/jungle.png");
@@ -198,6 +203,7 @@ void Game::Update()
 	
 	//Perform the subscription to the events
 	m_registry->GetSystem<DamageSystem>().SubscribeToEvents(m_eventManager);
+	m_registry->GetSystem<KeyboardInputSystem>().SubscribeToEvents(m_eventManager);
 	
 	// Update the Registry
 	m_registry->Update();
