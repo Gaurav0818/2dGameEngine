@@ -37,8 +37,8 @@ public:
 			
 			SDL_Rect destRect =
 				{
-					static_cast<int>(transform.position.x) - (sprite.isFixed ? 0 : camera.x ),
-					static_cast<int>(transform.position.y) - (sprite.isFixed ? 0 : camera.y ),
+					static_cast<int>(transform.position.x) - (transform.isFixed ? 0 : camera.x ),
+					static_cast<int>(transform.position.y) - (transform.isFixed ? 0 : camera.y ),
 					static_cast<int>(transform.scale.x * static_cast<float>(sprite.srcRect.w)),
 					static_cast<int>(transform.scale.y * static_cast<float>(sprite.srcRect.h))
 				};

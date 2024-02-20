@@ -171,7 +171,7 @@ void Game::LoadLevel()
 
 			Entity tile = m_registry->CreateEntity();
 			tile.AddComponent<TransformComponent>(glm::vec2(x * tileSize * tileScale, y * tileSize * tileScale), glm::vec2(tileScale, tileScale), 0);
-			tile.AddComponent<SpriteComponent>("tileMap-image", tileSize, tileSize, 0, false, sourceRectX, sourceRectY);
+			tile.AddComponent<SpriteComponent>("tileMap-image", tileSize, tileSize, 0, sourceRectX, sourceRectY);
 		}
 	}
 	mapFile.close();
@@ -193,7 +193,7 @@ void Game::LoadLevel()
 
 	Entity radar = m_registry->CreateEntity();
 
-	radar.AddComponent<TransformComponent>(glm::vec2(winWidth - 150, 24), glm::vec2(2,2), 0);
+	radar.AddComponent<TransformComponent>(glm::vec2(winWidth - 150, 24), glm::vec2(2,2), 0, 1);
 	radar.AddComponent<SpriteComponent>("radar-image", 64, 64, 2);
 	radar.AddComponent<AnimationComponent>(8, 8, true);
 	radar.AddComponent<BoxColliderComponent>(64, 64);
@@ -245,7 +245,7 @@ void Game::FixedUpdate()
 
 	m_fixedDeltaTime = 0.0f;
 	
-	m_registry->GetSystem<BoxColliderSystem>().Update(m_eventManager);
+	m_registry->GetSystem<BoxColliderSystem>().Update(m_eventManager, m_camera);
 }
 
 /**
