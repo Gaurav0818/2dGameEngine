@@ -171,7 +171,7 @@ void Game::LoadLevel()
 
 			Entity tile = m_registry->CreateEntity();
 			tile.AddComponent<TransformComponent>(glm::vec2(x * tileSize * tileScale, y * tileSize * tileScale), glm::vec2(tileScale, tileScale), 0);
-			tile.AddComponent<SpriteComponent>("tileMap-image", tileSize, tileSize, 0, sourceRectX, sourceRectY);
+			tile.AddComponent<SpriteComponent>("tileMap-image", tileSize, tileSize, 0, false, sourceRectX, sourceRectY);
 		}
 	}
 	mapFile.close();
@@ -184,8 +184,8 @@ void Game::LoadLevel()
 	
 	// Add a Component to the entity
 	chopper.AddComponent<TransformComponent>(glm::vec2(100, 100), glm::vec2(3, 3), 0);
-	chopper.AddComponent<RigidBodyComponent>(glm::vec2(1, 0), 200);
-	chopper.AddComponent<SpriteComponent>("chopper-image", 32, 32, 1, 0, 32);
+	chopper.AddComponent<RigidBodyComponent>(glm::vec2(0), 200);
+	chopper.AddComponent<SpriteComponent>("chopper-image", 32, 32, 1);
 	chopper.AddComponent<AnimationComponent>(2, 15, true);
 	chopper.AddComponent<BoxColliderComponent>(32, 32);
 	chopper.AddComponent<KeyboardControlledComponent>();
@@ -193,7 +193,7 @@ void Game::LoadLevel()
 
 	Entity radar = m_registry->CreateEntity();
 
-	radar.AddComponent<TransformComponent>(glm::vec2(250, 250), glm::vec2(2,2), 0);
+	radar.AddComponent<TransformComponent>(glm::vec2(winWidth - 150, 24), glm::vec2(2,2), 0);
 	radar.AddComponent<SpriteComponent>("radar-image", 64, 64, 2);
 	radar.AddComponent<AnimationComponent>(8, 8, true);
 	radar.AddComponent<BoxColliderComponent>(64, 64);
@@ -261,7 +261,7 @@ void Game::Render()
 	m_registry->GetSystem<RenderSystem>().Update(m_renderer, m_assetManager, m_camera);
 	
 	if(m_isDebug)
-		m_registry->GetSystem<RenderBoxCollisionSystem>().Update(m_renderer);
+		m_registry->GetSystem<RenderBoxCollisionSystem>().Update(m_renderer, m_camera);
 
 	SDL_RenderPresent(m_renderer);
 }
