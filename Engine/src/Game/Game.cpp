@@ -4,13 +4,17 @@
 #include<glm/glm.hpp>
 #include<SDL_image.h>
 
+#include "../Logger/Logger.h"
+#include "../ECS/ECS.h"
+
 #include "../Components/BoxColliderComponent.h"
 #include "../Components/KeyboardControlledComponent.h"
-#include "../ECS/ECS.h"
-#include "../Logger/Logger.h"
-
-#include "../Components/RigidBodyComponent.h"
 #include "../Components/TransformComponent.h"
+#include "../Components/RigidBodyComponent.h"
+#include "../Components/SpriteComponent.h"
+#include "../Components/AnimationComponent.h"
+#include "../Components/CameraFollowComponent.h"
+
 #include "../Systems/AnimationSystem.h"
 #include "../Systems/BoxColliderSystem.h"
 #include "../Systems/DamageSystem.h"
@@ -19,9 +23,12 @@
 #include "../Systems/MovementSystem.h"
 #include "../Systems/RenderBoxCollisionSystem.h"
 #include "../Systems/RenderSystem.h"
+#include "../Systems/CameraMovementSystem.h"
 
-struct AnimationComponent;
-Game::Game(): m_window(nullptr), m_renderer(nullptr), m_winWidth(500), m_winHeight(500), m_milliSecLastFrame(0)
+int Game::winWidth, Game::winHeight;
+int Game::mapWidth, Game::mapHeight;
+
+Game::Game(): m_window(nullptr), m_renderer(nullptr), m_milliSecLastFrame(0)
 {
 	m_isRunning = true;
 	m_registry = std::make_unique<Registry>();
@@ -51,13 +58,13 @@ void Game::Initialize()
 	SDL_DisplayMode displayMode;
 	SDL_GetCurrentDisplayMode(0, &displayMode);
 
-	m_winWidth = 1000;// displayMode.w;
-	m_winHeight = 1000;// displayMode.h;
+	winWidth = 1000;// displayMode.w;
+	winHeight = 1000;// displayMode.h;
 
 	m_window = SDL_CreateWindow(
 				nullptr, 
 				SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, 
-				m_winWidth, m_winHeight,
+				winWidth, winHeight,
 				SDL_WINDOW_RESIZABLE);
 
 	if (!m_window)
@@ -73,6 +80,10 @@ void Game::Initialize()
 		Logger::Error("Error Creating SDL Renderer.");
 		return;
 	}
+
+	// Initialize the camera view with the entire screen area
+
+	m_camera = {0, 0, winWidth, winHeight};
 }
 
 /**
@@ -131,6 +142,7 @@ void Game::LoadLevel()
 	m_registry->AddSystem<DamageSystem>();
 	m_registry->AddSystem<KeyboardInputSystem>();
 	m_registry->AddSystem<KeyboardControlSystem>();
+	m_registry->AddSystem<CameraMovementSystem>();
 
 	m_assetManager->AddTexture( m_renderer, "tank-image", "./assets/images/tank-panther-right.png");
 	m_assetManager->AddTexture( m_renderer, "tileMap-image", "./assets/tilemaps/jungle.png");
@@ -163,17 +175,21 @@ void Game::LoadLevel()
 		}
 	}
 	mapFile.close();
+
+	mapWidth = mapNumCols * tileSize * tileScale;
+	mapHeight = mapNumRows * tileSize * tileScale;
 	
 	// Create some entities
 	Entity chopper = m_registry->CreateEntity();
 	
 	// Add a Component to the entity
 	chopper.AddComponent<TransformComponent>(glm::vec2(100, 100), glm::vec2(3, 3), 0);
-	chopper.AddComponent<RigidBodyComponent>(glm::vec2(1, 0), 50);
+	chopper.AddComponent<RigidBodyComponent>(glm::vec2(1, 0), 200);
 	chopper.AddComponent<SpriteComponent>("chopper-image", 32, 32, 1, 0, 32);
 	chopper.AddComponent<AnimationComponent>(2, 15, true);
 	chopper.AddComponent<BoxColliderComponent>(32, 32);
 	chopper.AddComponent<KeyboardControlledComponent>();
+	chopper.AddComponent<CameraFollowComponent>();
 
 	Entity radar = m_registry->CreateEntity();
 
@@ -216,6 +232,7 @@ void Game::Update()
 	// Invoke all the Systems that needs to update
 	m_registry->GetSystem<MovementSystem>().Update(m_deltaTime);
 	m_registry->GetSystem<AnimationSystem>().Update();
+	m_registry->GetSystem<CameraMovementSystem>().Update(m_camera);
 
 }
 
@@ -241,7 +258,7 @@ void Game::Render()
 	SDL_RenderClear(m_renderer);
 
 	// Invoke all the Systems that needs to Render
-	m_registry->GetSystem<RenderSystem>().Update(m_renderer, m_assetManager);
+	m_registry->GetSystem<RenderSystem>().Update(m_renderer, m_assetManager, m_camera);
 	
 	if(m_isDebug)
 		m_registry->GetSystem<RenderBoxCollisionSystem>().Update(m_renderer);

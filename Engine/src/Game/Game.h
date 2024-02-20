@@ -27,17 +27,20 @@ public:
 
 
 public:
+    static int winWidth, winHeight;
+    static int mapWidth, mapHeight;
 	double GetDeltaTime()  { return m_deltaTime; }
 
 private:
     SDL_Window* m_window;
     SDL_Renderer* m_renderer;
+	SDL_Rect m_camera;
+	
     std::unique_ptr<Registry> m_registry;
     std::unique_ptr<AssetManager> m_assetManager;
     std::unique_ptr<EventManager> m_eventManager;
     
     bool m_isRunning, m_isDebug;
-    int m_winWidth, m_winHeight;
 
     int m_milliSecLastFrame;
 	double m_deltaTime, m_fixedDeltaTime;

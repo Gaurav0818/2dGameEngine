@@ -15,7 +15,7 @@ public:
 		RequireComponent<SpriteComponent>();
 	}
 
-	void Update(SDL_Renderer* renderer, std::unique_ptr<AssetManager>& assetManager)
+	void Update(SDL_Renderer* renderer, std::unique_ptr<AssetManager>& assetManager, SDL_Rect& camera)
 	{
 		// Get all system entities
 		auto entities = GetSystemEntities();
@@ -37,8 +37,8 @@ public:
 			
 			SDL_Rect destRect =
 				{
-					static_cast<int>(transform.position.x),
-					static_cast<int>(transform.position.y),
+					static_cast<int>(transform.position.x) - camera.x,
+					static_cast<int>(transform.position.y) - camera.y,
 					static_cast<int>(transform.scale.x * static_cast<float>(sprite.srcRect.w)),
 					static_cast<int>(transform.scale.y * static_cast<float>(sprite.srcRect.h))
 				};
