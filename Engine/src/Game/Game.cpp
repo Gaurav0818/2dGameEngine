@@ -5,6 +5,7 @@
 #include<SDL_image.h>
 
 #include "../Components/BoxColliderComponent.h"
+#include "../Components/KeyboardControlledComponent.h"
 #include "../ECS/ECS.h"
 #include "../Logger/Logger.h"
 
@@ -13,6 +14,7 @@
 #include "../Systems/AnimationSystem.h"
 #include "../Systems/BoxColliderSystem.h"
 #include "../Systems/DamageSystem.h"
+#include "../Systems/KeyboardControlSystem.h"
 #include "../Systems/KeyboardInputSystem.h"
 #include "../Systems/MovementSystem.h"
 #include "../Systems/RenderBoxCollisionSystem.h"
@@ -56,7 +58,7 @@ void Game::Initialize()
 				nullptr, 
 				SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, 
 				m_winWidth, m_winHeight,
-				SDL_WINDOW_BORDERLESS);
+				SDL_WINDOW_RESIZABLE);
 
 	if (!m_window)
 	{
@@ -104,7 +106,7 @@ void Game::ProcessInput()
 			m_isRunning = false;
 			break;
 		case SDL_KEYDOWN:
-			if (event.key.keysym.sym == SDLK_ESCAPE)
+			if(event.key.keysym.sym == SDLK_ESCAPE)
 				m_isRunning = false;
 			if(event.key.keysym.sym == SDLK_d)
 				m_isDebug = !m_isDebug;
@@ -128,10 +130,11 @@ void Game::LoadLevel()
 	m_registry->AddSystem<RenderBoxCollisionSystem>();
 	m_registry->AddSystem<DamageSystem>();
 	m_registry->AddSystem<KeyboardInputSystem>();
+	m_registry->AddSystem<KeyboardControlSystem>();
 
 	m_assetManager->AddTexture( m_renderer, "tank-image", "./assets/images/tank-panther-right.png");
 	m_assetManager->AddTexture( m_renderer, "tileMap-image", "./assets/tilemaps/jungle.png");
-	m_assetManager->AddTexture( m_renderer, "chopper-image", "./assets/images/chopper.png");
+	m_assetManager->AddTexture( m_renderer, "chopper-image", "./assets/images/chopper-spritesheet.png");
 	m_assetManager->AddTexture( m_renderer, "radar-image", "./assets/images/radar.png");
 
 	// Load the tileMap
@@ -166,14 +169,15 @@ void Game::LoadLevel()
 	
 	// Add a Component to the entity
 	chopper.AddComponent<TransformComponent>(glm::vec2(100, 100), glm::vec2(3, 3), 0);
-	chopper.AddComponent<RigidBodyComponent>(glm::vec2(10, 0));
-	chopper.AddComponent<SpriteComponent>("chopper-image", 32, 32, 1);
+	chopper.AddComponent<RigidBodyComponent>(glm::vec2(1, 0), 50);
+	chopper.AddComponent<SpriteComponent>("chopper-image", 32, 32, 1, 0, 32);
 	chopper.AddComponent<AnimationComponent>(2, 15, true);
 	chopper.AddComponent<BoxColliderComponent>(32, 32);
+	chopper.AddComponent<KeyboardControlledComponent>();
 
 	Entity radar = m_registry->CreateEntity();
 
-	radar.AddComponent<TransformComponent>(glm::vec2(250, 75), glm::vec2(2,2), 0);
+	radar.AddComponent<TransformComponent>(glm::vec2(250, 250), glm::vec2(2,2), 0);
 	radar.AddComponent<SpriteComponent>("radar-image", 64, 64, 2);
 	radar.AddComponent<AnimationComponent>(8, 8, true);
 	radar.AddComponent<BoxColliderComponent>(64, 64);
@@ -204,6 +208,7 @@ void Game::Update()
 	//Perform the subscription to the events
 	m_registry->GetSystem<DamageSystem>().SubscribeToEvents(m_eventManager);
 	m_registry->GetSystem<KeyboardInputSystem>().SubscribeToEvents(m_eventManager);
+	m_registry->GetSystem<KeyboardControlSystem>().SubscribeToEvents(m_eventManager);
 	
 	// Update the Registry
 	m_registry->Update();
