@@ -53,6 +53,8 @@ public:
 					sprite.srcRect.y = sprite.srcRect.h * 3;
 					break;
 
+				case SDLK_SPACE:
+					
 				default:
 					break;
 			}

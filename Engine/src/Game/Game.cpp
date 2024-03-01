@@ -14,6 +14,7 @@
 #include "../Components/SpriteComponent.h"
 #include "../Components/AnimationComponent.h"
 #include "../Components/CameraFollowComponent.h"
+#include "../Components/HealthComponent.h"
 #include "../Components/ProjectileEmitterComponent.h"
 
 #include "../Systems/AnimationSystem.h"
@@ -26,6 +27,7 @@
 #include "../Systems/RenderSystem.h"
 #include "../Systems/CameraMovementSystem.h"
 #include "../Systems/ProjectileEmitSystem.h"
+#include "../Systems/ProjectileSystem.h"
 
 int Game::winWidth, Game::winHeight;
 int Game::mapWidth, Game::mapHeight;
@@ -146,6 +148,7 @@ void Game::LoadLevel()
 	m_registry->AddSystem<KeyboardControlSystem>();
 	m_registry->AddSystem<CameraMovementSystem>();
 	m_registry->AddSystem<ProjectileEmitSystem>();
+	m_registry->AddSystem<ProjectileSystem>();
 
 	m_assetManager->AddTexture( m_renderer, "tank-image", "./assets/images/tank-panther-right.png");
 	m_assetManager->AddTexture( m_renderer, "tileMap-image", "./assets/tilemaps/jungle.png");
@@ -194,7 +197,8 @@ void Game::LoadLevel()
 	chopper.AddComponent<BoxColliderComponent>(32, 32);
 	chopper.AddComponent<KeyboardControlledComponent>();
 	chopper.AddComponent<CameraFollowComponent>();
-	chopper.AddComponent<ProjectileEmitterComponent>(glm::vec2(1,0), 500, 1000);
+	chopper.AddComponent<HealthComponent>(100);
+	chopper.AddComponent<ProjectileEmitterComponent>(glm::vec2(1,0), 500, 0, 2000);
 
 	Entity radar = m_registry->CreateEntity();
 
@@ -202,6 +206,16 @@ void Game::LoadLevel()
 	radar.AddComponent<SpriteComponent>("radar-image", 64, 64, 2);
 	radar.AddComponent<AnimationComponent>(8, 8, true);
 	radar.AddComponent<BoxColliderComponent>(64, 64);
+
+	Entity tank = m_registry->CreateEntity();
+
+	tank.AddComponent<TransformComponent>(glm::vec2(100, 24), glm::vec2(1,1), 0, 1);
+	tank.AddComponent<SpriteComponent>("tank-image", 32, 32);
+	tank.AddComponent<BoxColliderComponent>(32, 32);
+	tank.AddComponent<ProjectileEmitterComponent>(glm::vec2(1,0), 500, 1000, 2000);
+	tank.AddComponent<HealthComponent>(100);
+
+
 	
 }
 
@@ -230,6 +244,7 @@ void Game::Update()
 	m_registry->GetSystem<DamageSystem>().SubscribeToEvents(m_eventManager);
 	m_registry->GetSystem<KeyboardInputSystem>().SubscribeToEvents(m_eventManager);
 	m_registry->GetSystem<KeyboardControlSystem>().SubscribeToEvents(m_eventManager);
+	m_registry->GetSystem<ProjectileEmitSystem>().SubscribeToEvents(m_eventManager);
 	
 	// Update the Registry
 	m_registry->Update();
@@ -238,7 +253,8 @@ void Game::Update()
 	m_registry->GetSystem<MovementSystem>().Update(m_deltaTime);
 	m_registry->GetSystem<AnimationSystem>().Update();
 	m_registry->GetSystem<CameraMovementSystem>().Update(m_camera);
-	m_registry->GetSystem<ProjectileEmitSystem>().Update(m_registry);
+	m_registry->GetSystem<ProjectileEmitSystem>().Update(m_camera);
+	m_registry->GetSystem<ProjectileSystem>().Update();
 
 }
 

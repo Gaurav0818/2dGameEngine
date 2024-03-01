@@ -59,6 +59,7 @@ public:
 	int GetId() const { return m_id; }
 
 	void SetRegistry(class Registry* registry) { m_registry = registry; }
+	Registry* GetRegistry() const { return m_registry; }
 	void Kill();
 	// Component Management
 	template <typename TComponent, typename ...TArgs> void AddComponent( TArgs&& ...args);
@@ -75,7 +76,7 @@ public:
 
 private:
 	int m_id;
-	class Registry* m_registry;
+	Registry* m_registry;
 };
 
 
