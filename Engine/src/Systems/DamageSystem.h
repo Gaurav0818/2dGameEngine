@@ -12,7 +12,8 @@ public:
 	{
 		RequireComponent<BoxColliderComponent>();
 	}
-	
+
+	// Subscribe to CollisionEvent
 	void SubscribeToEvents(std::unique_ptr<EventManager>& eventManager)
 	{
 		eventManager->SubscribeToEvent<DamageSystem, CollisionEvent>(this, &DamageSystem::OnCollision);
@@ -29,8 +30,8 @@ public:
 		if(aCollider.isColliding && bCollider.isColliding)
 		{
 			Logger::Warning("Collision Detected btw Entity "+std::to_string(entityA.GetId())+" and Entity "+std::to_string(entityB.GetId())+"!");
-			entityA.Kill();
-			entityB.Kill();
+			//entityA.Kill();
+			//entityB.Kill();
 		}
 	}
 

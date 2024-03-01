@@ -14,6 +14,7 @@
 #include "../Components/SpriteComponent.h"
 #include "../Components/AnimationComponent.h"
 #include "../Components/CameraFollowComponent.h"
+#include "../Components/ProjectileEmitterComponent.h"
 
 #include "../Systems/AnimationSystem.h"
 #include "../Systems/BoxColliderSystem.h"
@@ -24,6 +25,7 @@
 #include "../Systems/RenderBoxCollisionSystem.h"
 #include "../Systems/RenderSystem.h"
 #include "../Systems/CameraMovementSystem.h"
+#include "../Systems/ProjectileEmitSystem.h"
 
 int Game::winWidth, Game::winHeight;
 int Game::mapWidth, Game::mapHeight;
@@ -143,11 +145,13 @@ void Game::LoadLevel()
 	m_registry->AddSystem<KeyboardInputSystem>();
 	m_registry->AddSystem<KeyboardControlSystem>();
 	m_registry->AddSystem<CameraMovementSystem>();
+	m_registry->AddSystem<ProjectileEmitSystem>();
 
 	m_assetManager->AddTexture( m_renderer, "tank-image", "./assets/images/tank-panther-right.png");
 	m_assetManager->AddTexture( m_renderer, "tileMap-image", "./assets/tilemaps/jungle.png");
 	m_assetManager->AddTexture( m_renderer, "chopper-image", "./assets/images/chopper-spritesheet.png");
 	m_assetManager->AddTexture( m_renderer, "radar-image", "./assets/images/radar.png");
+	m_assetManager->AddTexture( m_renderer, "bullet-image", "./assets/images/bullet.png");
 
 	// Load the tileMap
 	int tileSize = 32;
@@ -190,6 +194,7 @@ void Game::LoadLevel()
 	chopper.AddComponent<BoxColliderComponent>(32, 32);
 	chopper.AddComponent<KeyboardControlledComponent>();
 	chopper.AddComponent<CameraFollowComponent>();
+	chopper.AddComponent<ProjectileEmitterComponent>(glm::vec2(1,0), 500, 1000);
 
 	Entity radar = m_registry->CreateEntity();
 
@@ -233,6 +238,7 @@ void Game::Update()
 	m_registry->GetSystem<MovementSystem>().Update(m_deltaTime);
 	m_registry->GetSystem<AnimationSystem>().Update();
 	m_registry->GetSystem<CameraMovementSystem>().Update(m_camera);
+	m_registry->GetSystem<ProjectileEmitSystem>().Update(m_registry);
 
 }
 

@@ -395,8 +395,12 @@
     <ClInclude Include="src\Systems\KeyboardControlSystem.h" />
     <ClInclude Include="src\Systems\KeyboardInputSystem.h" />
     <ClInclude Include="src\Systems\MovementSystem.h" />
+    <ClInclude Include="src\Systems\ProjectileEmitSystem.h" />
     <ClInclude Include="src\Systems\RenderBoxCollisionSystem.h" />
     <ClInclude Include="src\Systems\RenderSystem.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="src\Components\ProjectileEmitterComponent.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

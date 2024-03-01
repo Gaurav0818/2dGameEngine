@@ -26,7 +26,7 @@ public:
 
 	void OnKeyPressed(KeyPressedEvent& event)
 	{
-		// TODO: change sprite and velocity
+		// TODO: change sprite and direction
 
 		for(auto entity: GetSystemEntities())
 		{
@@ -37,19 +37,19 @@ public:
 			switch(event.key)
 			{
 				case SDLK_UP:
-					rigidBody.velocity = keyboardControl.upVelocity;
+					rigidBody.direction = keyboardControl.upVelocity;
 					sprite.srcRect.y = sprite.srcRect.h * 0;
 					break;
 				case SDLK_RIGHT:
-					rigidBody.velocity = keyboardControl.rightVelocity;
+					rigidBody.direction = keyboardControl.rightVelocity;
 					sprite.srcRect.y = sprite.srcRect.h * 1;
 					break;
 				case SDLK_DOWN:
-					rigidBody.velocity = keyboardControl.downVelocity;
+					rigidBody.direction = keyboardControl.downVelocity;
 					sprite.srcRect.y = sprite.srcRect.h * 2;
 					break;
 				case SDLK_LEFT:
-					rigidBody.velocity = keyboardControl.leftVelocity;
+					rigidBody.direction = keyboardControl.leftVelocity;
 					sprite.srcRect.y = sprite.srcRect.h * 3;
 					break;
 

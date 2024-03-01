@@ -21,8 +21,8 @@ public:
 			// For each entity, get the components and update them
 			auto& transform = entity.GetComponent<TransformComponent>();
 			const auto& rigidBody = entity.GetComponent<RigidBodyComponent>();
-			transform.position.x += rigidBody.velocity.x * rigidBody.speed * deltaTime;
-			transform.position.y += rigidBody.velocity.y * rigidBody.speed * deltaTime;
+			transform.position.x += rigidBody.direction.x * rigidBody.speed * deltaTime;
+			transform.position.y += rigidBody.direction.y * rigidBody.speed * deltaTime;
 		}
 	}
 };
