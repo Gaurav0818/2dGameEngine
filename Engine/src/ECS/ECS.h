@@ -175,7 +175,7 @@ public:
 	
 	//Group Management
 	void GroupEntity(Entity entity, const std::string& groupToAssign);
-	bool EntityHasGroup(Entity entity, const std::string& groupToCheck);
+	bool EntityBelongsToGroup(Entity entity, const std::string& groupToCheck) const;
 	std::vector<Entity> GetEntityByGroup(const std::string& group) const;
 	void RemoveEntityGroup(Entity entity);
 	

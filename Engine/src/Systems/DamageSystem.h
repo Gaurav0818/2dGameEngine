@@ -43,13 +43,16 @@ public:
 
 		if(!receiverEntity.HasComponent<HealthComponent>())
 			return;
+
+		auto& health = receiverEntity.GetComponent<HealthComponent>();
+		bool isPLayer = receiverEntity.HasTag("player");
+		bool isEnemy = receiverEntity.BelongsToGroup("enemy");
 		
-		if( receiverEntity.HasTag("player") || receiverEntity.BelongsToGroup("enemy"))
+		if( isPLayer || isEnemy )
 		{
-			auto& health = receiverEntity.GetComponent<HealthComponent>();
+			bool isFriendlyProjectile = projectile.isFriendly;
 			
-			if(( !projectile.isFriendly && receiverEntity.HasTag("player") )
-				|| projectile.isFriendly && receiverEntity.BelongsToGroup("enemy"))
+			if(( !isFriendlyProjectile && isPLayer ) || ( isFriendlyProjectile && isEnemy) )
 			{
 				health.healthPercentage -= projectile.hitDamage;
 				projectileEntity.Kill();
@@ -57,7 +60,6 @@ public:
 			
 			if(health.healthPercentage <= 0)
 				receiverEntity.Kill();
-
 		}
 	}
 

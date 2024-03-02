@@ -22,7 +22,7 @@ void Entity::Group(const std::string& group)
 
 bool Entity::BelongsToGroup(const std::string& group)
 {
-    return m_registry->EntityHasGroup(*this, group);
+    return m_registry->EntityBelongsToGroup(*this, group);
 }
 
 void System::AddEntityToSystem(Entity entity)
@@ -131,8 +131,14 @@ void Registry::GroupEntity(Entity entity, const std::string& groupToAssign)
     m_groupPerEntity.emplace(entity.GetId(), groupToAssign);
 }
 
-bool Registry::EntityHasGroup(Entity entity, const std::string& groupToCheck)
+bool Registry::EntityBelongsToGroup(Entity entity, const std::string& groupToCheck) const 
 {
+    if(m_entitiesPerGroup.find(groupToCheck) == m_entitiesPerGroup.end())
+    {
+        Logger::Error("Group type does not Exist : "+ groupToCheck);
+        return false;
+    }
+    
     auto groupEntities = m_entitiesPerGroup.at(groupToCheck);
     return groupEntities.find(entity.GetId()) != groupEntities.end();
 }
