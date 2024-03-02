@@ -177,6 +177,7 @@ void Game::LoadLevel()
 			mapFile.ignore();
 
 			Entity tile = m_registry->CreateEntity();
+			tile.Group("tiles");
 			tile.AddComponent<TransformComponent>(glm::vec2(x * tileSize * tileScale, y * tileSize * tileScale), glm::vec2(tileScale, tileScale), 0);
 			tile.AddComponent<SpriteComponent>("tileMap-image", tileSize, tileSize, 0, sourceRectX, sourceRectY);
 		}
@@ -188,8 +189,8 @@ void Game::LoadLevel()
 	
 	// Create some entities
 	Entity chopper = m_registry->CreateEntity();
-	
 	// Add a Component to the entity
+	chopper.Tag("player");
 	chopper.AddComponent<TransformComponent>(glm::vec2(100, 100), glm::vec2(3, 3), 0);
 	chopper.AddComponent<RigidBodyComponent>(glm::vec2(0), 200);
 	chopper.AddComponent<SpriteComponent>("chopper-image", 32, 32, 1);
@@ -198,25 +199,21 @@ void Game::LoadLevel()
 	chopper.AddComponent<KeyboardControlledComponent>();
 	chopper.AddComponent<CameraFollowComponent>();
 	chopper.AddComponent<HealthComponent>(100);
-	chopper.AddComponent<ProjectileEmitterComponent>(glm::vec2(1,0), 500, 0, 2000);
+	chopper.AddComponent<ProjectileEmitterComponent>(glm::vec2(1,0), 500, 0, 2000, 10, true);
 
 	Entity radar = m_registry->CreateEntity();
-
 	radar.AddComponent<TransformComponent>(glm::vec2(winWidth - 150, 24), glm::vec2(2,2), 0, 1);
 	radar.AddComponent<SpriteComponent>("radar-image", 64, 64, 2);
 	radar.AddComponent<AnimationComponent>(8, 8, true);
 	radar.AddComponent<BoxColliderComponent>(64, 64);
 
 	Entity tank = m_registry->CreateEntity();
-
+	tank.Group("enemy");
 	tank.AddComponent<TransformComponent>(glm::vec2(100, 24), glm::vec2(1,1), 0, 1);
 	tank.AddComponent<SpriteComponent>("tank-image", 32, 32);
 	tank.AddComponent<BoxColliderComponent>(32, 32);
-	tank.AddComponent<ProjectileEmitterComponent>(glm::vec2(1,0), 500, 1000, 2000);
+	tank.AddComponent<ProjectileEmitterComponent>(glm::vec2(1,0), 500, 1000, 2000, 10);
 	tank.AddComponent<HealthComponent>(100);
-
-
-	
 }
 
 /**

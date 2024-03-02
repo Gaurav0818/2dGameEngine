@@ -70,6 +70,7 @@ public:
 				// Emit a projectile
 				// Add a new projectile entity to the registry
 				Entity projectileEnitiy = entity.GetRegistry()->CreateEntity();
+				projectileEnitiy.Group("projectiles");
 				projectileEnitiy.AddComponent<TransformComponent>(projectilePosition, transform.scale, 0, 1);
 				projectileEnitiy.AddComponent<RigidBodyComponent>(projectileEmitterComponent.direction,
 					projectileEmitterComponent.speed);

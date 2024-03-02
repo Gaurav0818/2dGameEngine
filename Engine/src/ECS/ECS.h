@@ -61,6 +61,12 @@ public:
 	void SetRegistry(class Registry* registry) { m_registry = registry; }
 	Registry* GetRegistry() const { return m_registry; }
 	void Kill();
+
+	// Manage entity Tags and Groups
+	void Tag(const std::string& tag);
+	bool HasTag(const std::string& tag);
+	void Group(const std::string& group);
+	bool BelongsToGroup(const std::string& group);
 	// Component Management
 	template <typename TComponent, typename ...TArgs> void AddComponent( TArgs&& ...args);
 	template <typename TComponent> void RemoveComponent();
@@ -161,6 +167,18 @@ public:
 	Entity CreateEntity();
 	void KillEntity(Entity entity);
 
+	//Tag Management
+	void TagEntity(Entity entity, const std::string& tagToAssign);
+	bool EntityHasTag(Entity entity, const std::string& tagToCheck);
+	Entity GetEntityByTag(const std::string& tag) const;
+	void RemoveEntityTag(Entity entity);
+	
+	//Group Management
+	void GroupEntity(Entity entity, const std::string& groupToAssign);
+	bool EntityHasGroup(Entity entity, const std::string& groupToCheck);
+	std::vector<Entity> GetEntityByGroup(const std::string& group) const;
+	void RemoveEntityGroup(Entity entity);
+	
 	// Component Management
 	template <typename TComponent, typename ...TArgs> void AddComponent(Entity entity, TArgs&& ...args);
 	template <typename TComponent> void RemoveComponent(Entity entity);
@@ -194,6 +212,14 @@ private:
 	int m_numEntities = 0;
 
 	std::deque<int> m_freeIds;
+	
+	// Entity tags (one tag per Entity)
+	std::unordered_map<std::string, Entity> m_entityPerTag;
+	std::unordered_map<int, std::string> m_tagPerEntity;
+
+	// Entity groups (a set of entities per group name)
+	std::unordered_map<std::string, std::set<Entity>> m_entitiesPerGroup;
+	std::unordered_map<int, std::string> m_groupPerEntity;
 
 	/** 
 	 * @brief 

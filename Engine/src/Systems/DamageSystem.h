@@ -1,5 +1,6 @@
 #pragma once
 #include "../Components/BoxColliderComponent.h"
+#include "../Components/ProjectileComponent.h"
 #include "../ECS/ECS.h"
 
 #include "../Events/CollisionEvent.h"
@@ -19,19 +20,44 @@ public:
 		eventManager->SubscribeToEvent<DamageSystem, CollisionEvent>(this, &DamageSystem::OnCollision);
 	}
 
-	void OnCollision(CollisionEvent& e)
+	void OnCollision(CollisionEvent& event)
 	{
-		auto entityA = e.entityA;
-		auto entityB = e.entityB;
+		auto entityA = event.entityA;
+		auto entityB = event.entityB;
 		
-		auto& aCollider = entityA.GetComponent<BoxColliderComponent>();
-		auto& bCollider = entityB.GetComponent<BoxColliderComponent>();
-		
-		if(aCollider.isColliding && bCollider.isColliding)
+		Logger::Warning("Collision Detected btw Entity "+std::to_string(entityA.GetId())+" and Entity "+std::to_string(entityB.GetId())+"!");
+
+		if(entityA.BelongsToGroup("projectiles"))
 		{
-			Logger::Warning("Collision Detected btw Entity "+std::to_string(entityA.GetId())+" and Entity "+std::to_string(entityB.GetId())+"!");
-			//entityA.Kill();
-			//entityB.Kill();
+			OnProjectileHitsPlayer(entityA, entityB);
+		}
+		else if(entityB.BelongsToGroup("projectiles"))
+		{
+			OnProjectileHitsPlayer(entityB, entityA);
+		}
+	}
+
+	void OnProjectileHitsPlayer(Entity projectileEntity, Entity receiverEntity)
+	{
+		auto projectile = projectileEntity.GetComponent<ProjectileComponent>();
+
+		if(!receiverEntity.HasComponent<HealthComponent>())
+			return;
+		
+		if( receiverEntity.HasTag("player") || receiverEntity.BelongsToGroup("enemy"))
+		{
+			auto& health = receiverEntity.GetComponent<HealthComponent>();
+			
+			if(( !projectile.isFriendly && receiverEntity.HasTag("player") )
+				|| projectile.isFriendly && receiverEntity.BelongsToGroup("enemy"))
+			{
+				health.healthPercentage -= projectile.hitDamage;
+				projectileEntity.Kill();
+			}
+			
+			if(health.healthPercentage <= 0)
+				receiverEntity.Kill();
+
 		}
 	}
 
